@@ -1,0 +1,46 @@
+name: "Adds a tag to an existing docker image"
+description: "Adds a tag to an existing docker image"
+inputs:
+  source-tag:
+    description: 'Tag of existing docker image'
+    required: true
+  tag:
+    description: 'Tag to add'
+    required: true
+  username:
+    description: 'Dockerhub username defaults to secrets.DOCKERHUB_USERNAME'
+    required: true
+    default: ${{ secrets.DOCKERHUB_USERNAME }}
+  token:
+    description: 'Dockerhub token defaults to secrets.DOCKERHUB_TOKEN'
+    required: true
+    default: ${{ secrets.DOCKERHUB_TOKEN }}
+  registry:
+    description: 'Dockerhub registry defaults to secrets.DOCKERHUB_USERNAME'
+    required: true
+    default: ${{ inputs.username }}
+  image:
+    description: 'Dockerhub image defaults to github.event.repository.name'
+    required: true
+    default: ${{ github.event.repository.name }}
+outputs:
+  value:
+    description: "The last non-merge commit"
+    value: ${{ steps.calculation.outputs.value }}
+runs:
+  using: "composite"
+  steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.username }}
+        password: ${{ inputs.token }}
+    - name: Add production tag
+      run: |
+        docker buildx imagetools create ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.source-tag }} \
+        --tag ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.tag }}
+      shell: bash
