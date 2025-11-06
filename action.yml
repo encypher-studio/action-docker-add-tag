@@ -8,17 +8,17 @@ inputs:
     description: 'Tag to add'
     required: true
   username:
-    description: 'Dockerhub username defaults to secrets.DOCKERHUB_USERNAME'
+    description: 'Dockerhub username defaults to vars.DOCKERHUB_USERNAME'
     required: true
-    default: ${{ secrets.DOCKERHUB_USERNAME }}
+    default: ${{ vars.DOCKERHUB_USERNAME }}
   token:
     description: 'Dockerhub token defaults to secrets.DOCKERHUB_TOKEN'
     required: true
     default: ${{ secrets.DOCKERHUB_TOKEN }}
   registry:
-    description: 'Dockerhub registry defaults to secrets.DOCKERHUB_USERNAME'
+    description: 'Dockerhub registry defaults to vars.DOCKERHUB_USERNAME'
     required: true
-    default: ${{ inputs.username }}
+    default: ${{ vars.DOCKERHUB_USERNAME }}
   image:
     description: 'Dockerhub image defaults to github.event.repository.name'
     required: true
